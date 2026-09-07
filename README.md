@@ -1,3 +1,4 @@
+<img width="1600" height="781" alt="7acf30a8-c63f-43b2-90b1-13b25980b113" src="https://github.com/user-attachments/assets/3adbf1cb-7451-4378-82cf-954f3432b395" />
 # RoundNest 💰
 
 A web application for managing and visualizing personal savings, transactions, and investment data.
