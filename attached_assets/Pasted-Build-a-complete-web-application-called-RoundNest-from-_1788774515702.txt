@@ -1,0 +1,546 @@
+Build a complete web application called "RoundNest" from scratch.
+
+IMPORTANT:
+This is a portfolio/interview project. The primary goal is to demonstrate a clean Flask/Python application that can later be connected to AWS cloud services such as Amazon S3 and IAM. Build the application cleanly and modularly so the cloud storage layer can be added easily afterward.
+
+Do NOT use fake AWS integrations or pretend that AWS is connected. For this first version, make the application fully functional locally using a simple local JSON storage layer. We will add the real AWS S3 + IAM backend separately after the application works.
+
+TECH STACK:
+- Python 3
+- Flask
+- HTML
+- CSS
+- Vanilla JavaScript
+- JSON for local development storage
+- Chart.js via CDN is allowed for charts
+- Keep dependencies minimal
+- Do NOT use React, Next.js, Node.js, PostgreSQL, Firebase, Supabase, or other unnecessary technologies.
+- Structure the code so storage can later be replaced with AWS S3 using Boto3 without rewriting the business logic.
+
+PROJECT CONCEPT:
+
+RoundNest is a micro-investment simulation application that helps users build investment savings automatically through either transaction round-ups or scheduled auto-saving.
+
+This is a SIMULATION only.
+No real money, bank accounts, payments, financial transactions, or actual investments are performed.
+
+CORE USER FLOW:
+
+1. User opens RoundNest.
+2. User chooses how they want to save:
+   A. Round-Up Saving
+   B. Auto-Save
+
+ROUND-UP SAVING:
+
+The user chooses a round-up target:
+- ₹5
+- ₹10
+- ₹15
+- ₹20
+
+When a user enters a transaction amount, calculate the amount needed to reach the next multiple of the selected target.
+
+Examples:
+If target is ₹10:
+₹237 → ₹240 → ₹3 saved
+₹452 → ₹460 → ₹8 saved
+₹101 → ₹110 → ₹9 saved
+
+The round-up amount should be calculated dynamically.
+
+AUTO-SAVE:
+
+The user can choose:
+- Weekly
+- Monthly
+
+And an amount such as:
+- ₹100
+- ₹200
+- ₹500
+- Custom amount
+
+This should be represented as a scheduled savings simulation. Do NOT actually connect to a bank or deduct real money.
+
+INVESTMENT THRESHOLD:
+
+The application should track accumulated savings.
+
+When savings are below ₹100:
+Show progress toward the first simulated investment.
+
+Example:
+
+₹73 saved
+₹27 more until your first investment
+
+Show a progress bar.
+
+When savings reach ₹100 or more:
+Show an "Investment Unlocked" state.
+
+The user can then choose between:
+
+1. Simulated Digital Gold
+2. Simulated Mutual Fund
+
+Clearly label both as simulations.
+
+INVESTMENT SIMULATION:
+
+After the user selects an investment type, let them choose a time horizon:
+
+- 1 month
+- 3 months
+- 6 months
+- 1 year
+
+Show an illustrative projected value and a simple animated/chart visualization.
+
+IMPORTANT:
+Do not claim that returns are guaranteed.
+Use clearly labeled "Illustrative Projection" or "Simulated Value."
+
+Include a small disclaimer:
+
+"Simulation only. Projected returns are illustrative and are not guaranteed. This application does not provide financial advice."
+
+The simulated return assumptions should be configurable in the backend rather than hardcoded throughout the frontend.
+
+DASHBOARD:
+
+Create a modern dashboard showing:
+
+- Total savings
+- Total number of transactions
+- Total round-up amount
+- Current simulated gold holdings/value if selected
+- Current simulated mutual fund value if selected
+- Progress toward ₹100 investment threshold
+- Recent transactions
+- Current saving mode
+- Current investment type
+- Investment projection
+- Cloud sync status placeholder
+
+Example dashboard wording:
+
+"Your money is quietly growing."
+
+Show:
+₹73.00
+saved so far
+
+Then:
+₹27 more until your first investment
+
+When the user reaches ₹100:
+"Your first simulated investment is unlocked."
+
+TRANSACTION HISTORY:
+
+Show a clean transaction list.
+
+Each transaction should display:
+- Transaction amount
+- Round-up amount
+- Date/time
+- Saving method
+
+Example:
+
+₹237
+Round-up +₹3
+
+₹452
+Round-up +₹8
+
+₹101
+Round-up +₹9
+
+Allow the user to add new transactions from the UI.
+
+DATA MODEL:
+
+Create clean data structures for:
+
+User/settings:
+- saving_method
+- round_up_target
+- auto_save_amount
+- auto_save_frequency
+- investment_type
+
+Transactions:
+- id
+- amount
+- round_up_amount
+- timestamp
+
+Savings:
+- total_saved
+- investment_threshold
+
+Investment:
+- type
+- amount_invested
+- time_horizon
+- projected_value
+- simulated_return_rate
+
+The application should persist these locally in JSON files so restarting the Flask server does not lose the data.
+
+BACKEND:
+
+Use Flask with clear routes and separation of concerns.
+
+Create a clean project structure similar to:
+
+roundnest/
+    app.py
+    config.py
+    requirements.txt
+    README.md
+
+    services/
+        __init__.py
+        savings_service.py
+        investment_service.py
+        storage_service.py
+
+    data/
+        app_data.json
+
+    templates/
+        base.html
+        index.html
+        dashboard.html
+        setup.html
+        transactions.html
+        investment.html
+
+    static/
+        css/
+            style.css
+        js/
+            app.js
+            dashboard.js
+
+Keep business logic OUT of HTML templates.
+
+The round-up calculation should be implemented in Python in a reusable function/service.
+
+Investment projection calculations should also be implemented in Python.
+
+STORAGE ABSTRACTION:
+
+This is very important.
+
+Create a storage service/interface so that currently:
+
+Flask → Local JSON Storage
+
+can later become:
+
+Flask → Boto3 → Amazon S3
+
+Do not mix S3-specific code throughout the application.
+
+For example, create functions such as:
+
+load_data()
+save_data()
+save_transaction()
+get_transactions()
+
+Keep the storage implementation isolated.
+
+Later we will replace the implementation with S3.
+
+SECURITY:
+
+Do not include AWS access keys, secret keys, passwords, or tokens anywhere in the code.
+
+Do not create fake credentials.
+
+Prepare the project for environment-based configuration.
+
+Include a .env.example file if needed, but do NOT include real secrets.
+
+CLOUD-READY DESIGN:
+
+Add a small "Cloud Sync" indicator in the UI, but for now it should say something like:
+
+"Local storage"
+
+or
+
+"Cloud sync not configured"
+
+Do NOT falsely claim that data is currently synchronized with AWS.
+
+Structure the backend so AWS S3 can later be added with Boto3.
+
+The future architecture should be:
+
+User
+↓
+Flask application
+↓
+Business logic
+↓
+Storage service
+↓
+Boto3
+↓
+Amazon S3
+↓
+IAM permissions
+
+But do not implement the AWS portion yet.
+
+UI / DESIGN:
+
+The UI is extremely important.
+
+I do NOT want a generic banking dashboard.
+I do NOT want a boring Paytm-style interface.
+I do NOT want the typical AI-generated purple gradient SaaS dashboard.
+I do NOT want excessive glassmorphism.
+
+Make it feel like a premium modern fintech/productivity application.
+
+Design direction:
+
+- Dark premium background
+- Elegant typography
+- Strong spacing
+- Subtle gradients
+- Soft glowing accents
+- Floating decorative elements
+- Subtle 3D-looking coins/spheres
+- Small animated particles/floating shapes
+- Smooth transitions
+- Micro-interactions
+- Tasteful hover effects
+- Animated progress bars
+- Animated numbers when values change
+- Smooth page transitions where practical
+
+The design should feel:
+- modern
+- premium
+- slightly futuristic
+- aesthetic
+- youthful
+- sophisticated
+- minimal
+
+It should NOT feel:
+- childish
+- tacky
+- overly neon
+- crypto-themed
+- cluttered
+- obviously AI-generated
+
+Use animations sparingly and intentionally.
+
+HOMEPAGE:
+
+Create a strong landing page.
+
+Hero:
+
+ROUNDNEST
+
+"Make small moves.
+Build something bigger."
+
+Supporting text:
+
+"Turn everyday spending and small savings into a simulated investment journey."
+
+Primary button:
+
+"Start Saving"
+
+Use subtle floating visual elements around the hero, such as abstract coins, rings, spheres, or particles.
+
+Do not use copyrighted images.
+
+SETUP EXPERIENCE:
+
+After clicking Start Saving, create a smooth setup experience.
+
+Step 1:
+"How do you want to save?"
+
+Cards:
+- Round Up
+- Auto Save
+
+Step 2 changes depending on selection.
+
+Round Up:
+Choose ₹5 / ₹10 / ₹15 / ₹20
+
+Auto Save:
+Choose amount and Weekly / Monthly
+
+Step 3:
+"Where would you like your simulated savings to grow?"
+
+Cards:
+- Simulated Digital Gold
+- Simulated Mutual Fund
+
+Allow the user to skip investment selection until ₹100 is reached if appropriate.
+
+DASHBOARD DESIGN:
+
+Use a strong visual hierarchy.
+
+Top:
+"Your money is quietly growing."
+
+Main savings card:
+₹XX.XX
+saved so far
+
+Progress toward ₹100.
+
+Then cards for:
+- Transactions
+- Round-ups
+- Investment
+- Projection
+
+Include a visually attractive chart for savings/investment projection.
+
+Use empty states gracefully.
+
+POPUPS / MODALS:
+
+Use tasteful modal/popup interactions for:
+- Adding a transaction
+- Choosing investment
+- Showing investment unlocked
+- Confirming simulated investment
+- Simulated redemption
+
+When the user reaches ₹100, show a celebratory but tasteful animation/modal:
+
+"Your first investment is unlocked."
+
+Do not make it childish.
+
+SIMULATED REDEMPTION:
+
+Allow the user to simulate redeeming an investment.
+
+Show:
+Initial simulated investment
+Simulated current value
+Simulated gain/loss
+
+Button:
+"Simulate Redemption"
+
+Clearly state that no real money is transferred.
+
+RESPONSIVENESS:
+
+The application must work well on:
+- Desktop
+- Tablet
+- Mobile
+
+Use responsive CSS.
+
+ACCESSIBILITY:
+
+Use:
+- semantic HTML
+- labels for inputs
+- keyboard-friendly buttons
+- reasonable contrast
+- accessible modal behavior
+
+ERROR HANDLING:
+
+Handle:
+- invalid transaction amounts
+- negative amounts
+- empty fields
+- invalid custom savings amounts
+- invalid investment choices
+
+Show friendly inline error messages rather than browser alert() wherever practical.
+
+CODE QUALITY:
+
+- Keep code readable for a beginner/intermediate Python developer.
+- Add comments only where useful.
+- Use functions instead of putting everything into one huge app.py.
+- Avoid unnecessary abstraction.
+- Use meaningful variable/function names.
+- Do not generate unused files or libraries.
+- Do not include fake functionality.
+
+README:
+
+Create a useful README explaining:
+
+1. What RoundNest is
+2. Features
+3. Technology stack
+4. Project structure
+5. How the round-up calculation works
+6. How the investment simulation works
+7. How to run locally
+8. Current local-storage architecture
+9. Planned AWS architecture
+
+Include this future architecture:
+
+User
+↓
+Flask
+↓
+Storage Service
+↓
+Boto3
+↓
+Amazon S3
+↓
+IAM least-privilege access
+
+Clearly state that AWS integration will be configured separately and is not currently active.
+
+FINAL REQUIREMENT:
+
+Before finishing, make sure the entire application actually runs.
+
+Install dependencies if necessary.
+Run the Flask application.
+Fix syntax errors and runtime errors.
+Make sure all navigation/buttons/forms work.
+Make sure data persists locally.
+Make sure the dashboard updates after adding transactions.
+Make sure the ₹100 investment threshold works.
+Make sure investment projections work.
+Make sure the UI is polished and responsive.
+
+Do not stop at generating files.
+Actually test the application and fix errors.
+
+At the end, give me:
+1. How to run the application
+2. The main files created
+3. Any dependencies installed
+4. A short explanation of how the backend works
+5. A short explanation of where AWS S3 + IAM will be integrated later
+
+Again: DO NOT implement fake AWS functionality. Build the complete working local application first, with a clean storage abstraction specifically so we can add real AWS S3 and IAM afterward.

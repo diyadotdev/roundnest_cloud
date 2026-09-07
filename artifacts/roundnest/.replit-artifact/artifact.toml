@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "RoundNest"
+description = "A premium micro-investment simulation app that turns small everyday savings into an illustrative growth journey, with local persistence, round-up and auto-save modes, threshold progress, and simulated investment projections."
+version = "1.0.0"
+id = "artifacts/roundnest"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 26163
+
+[services.development]
+run = "pnpm --filter @workspace/roundnest run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/roundnest", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/roundnest/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "26163"
+BASE_PATH = "/"
